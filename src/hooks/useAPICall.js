@@ -1,5 +1,5 @@
 import * as APIServices from '../services/API';
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from '../notistack';
 import { useContext } from 'react';
 import { LoaderContext } from '../context/LoaderContext';
 import { UserContext } from '../context/UserContext';

@@ -1,6 +1,6 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from '../../notistack';
 import { useContext } from 'react';
 import { UserContext } from '../../context/UserContext';
 import { LoaderContext } from '../../context/LoaderContext';
