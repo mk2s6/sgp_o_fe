@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
-// const BASE_URL = 'http://192.168.137.15:4200';
+// const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = 'http://192.168.137.15:4200';
 
 export const ADMIN_LOGIN = async ({ username, password }) => await axios.post(`${BASE_URL}/admin/login`, { username, password });
 
