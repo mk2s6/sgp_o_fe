@@ -212,7 +212,7 @@ function Donations({ routes }) {
           </Fade>
         </Modal>
       )}
-      <Container component='main' maxWidth='md' sx={{ mt: 1, p: 2, xs: { maxWidth: '100%' } }}>
+      <Container component='main' maxWidth='md' sx={{ mt: 1, p: 0.5, xs: { maxWidth: '100%', minWidth: '95%' } }}>
         <Paper
           component='div'
           elevation={5}
@@ -244,8 +244,8 @@ function Donations({ routes }) {
           </Grid>
 
           {donations.length > 0 && (
-            <TableContainer>
-              <Table sx={{ minWidth: 250 }} aria-label='simple table'>
+            <TableContainer sx={{ mt: 2 }}>
+              <Table sx={{ minWidth: 300 }} size='small' aria-label='simple table'>
                 <TableHead>
                   <TableRow>{headCells.map((c) => (!c.needAuth || loginStatus) && <TableCell key={c.id}>{c.label}</TableCell>)}</TableRow>
                 </TableHead>

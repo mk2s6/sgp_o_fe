@@ -43,7 +43,7 @@ function Dashboard({ routes }) {
 
   return (
     <>
-      <Container component='main' maxWidth='md' sx={{ mt: 1, p: 2 }}>
+      <Container component='main' maxWidth='md' sx={{ mt: 1, p: 0.5, xs: { minWidth: '95%', maxWidth: '100%' } }}>
         <Paper
           component='div'
           elevation={5}
