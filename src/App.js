@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import Main from './pages/Main';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { routes } from './commons/routes';
+import React from 'react';
+import { SnackbarProvider } from 'notistack';
+import { Button, Slide } from '@mui/material';
+import Loader from './components/Loader';
+import { LoaderContextProvider } from './context/LoaderContext';
+import { UserContextProvider } from './context/UserContext';
+
+const notistackRef = React.createRef();
+
+const onClickDismiss = (key) => () => {
+  notistackRef.current.closeSnackbar(key);
+};
 
 function App() {
+  console.log(routes);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <UserContextProvider>
+        <SnackbarProvider
+          ref={notistackRef}
+          autoHideDuration={3000}
+          maxSnack={3}
+          TransitionComponent={Slide}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          preventDuplicate
+          action={(key) => <Button onClick={onClickDismiss(key)}>Close</Button>}
+          sx={{ zIndex: 100000 }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <LoaderContextProvider>
+            <Loader />
+            <Router>
+              <Main routes={routes} />
+            </Router>
+          </LoaderContextProvider>
+        </SnackbarProvider>
+      </UserContextProvider>
+    </>
   );
 }
 

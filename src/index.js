@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { Fragment, Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { themeOptions } from './commons/theme';
+
+const T = createTheme(themeOptions);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <>
+    <ThemeProvider theme={T}>
+      <Suspense fallback={<Fragment>Loading...</Fragment>}>
+        <App />
+      </Suspense>
+    </ThemeProvider>
+  </>,
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
