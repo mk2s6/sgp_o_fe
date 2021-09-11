@@ -22,8 +22,6 @@ function Main({ routes }) {
   const { loginStatus, unRegisterUser } = useContext(UserContext);
 
   useEffect(() => {
-    if (!loginStatus && location.pathname === '/') history.replace('/dashboard');
-    if (!loginStatus) history.replace('/dashboard');
     if (loginStatus && location.pathname === '/login') history.replace('/');
     if (loginStatus && location.pathname === '/signout') {
       unRegisterUser();
