@@ -11,18 +11,19 @@ const useAPICall = () => {
 
   const APIRequest = async (URL, data) => {
     setLoader(true);
-    setTimeout(() => {
-      setLoader(false);
-    }, 5000);
     try {
       const response = await APIServices[URL](data, { token }, {});
       enqueueSnackbar(response.data.data.description, { variant: 'success' });
       setLoader(false);
       return { data: response.data.data, token: response.headers['x-id-token'] };
     } catch (e) {
-      const err = e.response.data;
+      let err = e;
+      if (!(e.message === 'Network Error')) err = e.response.data;
+      else err.message = 'Internal Server Error - Please try again later.';
       setLoader(false);
-      enqueueSnackbar(err.message, { variant: e.response.status === 400 || e.response.status === 500 ? 'error' : 'warning' });
+      enqueueSnackbar(err.message, {
+        variant: e?.response?.status === 422 ? 'warning' : 'error',
+      });
       return Promise.reject(err);
     }
   };

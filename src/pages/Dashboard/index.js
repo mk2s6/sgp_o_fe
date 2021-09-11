@@ -1,4 +1,4 @@
-import { Box, Container, FormControl, Grid, InputLabel, Paper, Select, MenuItem, Typography, Button, Card } from '@mui/material';
+import { Container, Fab, FormControl, Grid, InputLabel, Paper, Select, MenuItem, Typography, Button, Card } from '@mui/material';
 import { useState, useEffect } from 'react';
 import useAPICall from '../../hooks/useAPICall';
 import useInput from '../../hooks/useInput';
@@ -54,8 +54,8 @@ function Dashboard({ routes }) {
               <FormControl fullWidth>
                 <InputLabel id='demo-simple-select-label'>Occasion</InputLabel>
                 <Select labelId='demo-simple-select-label' id='demo-simple-select' label='Occasion' {...bindOccasion}>
-                  {occasionsList.map((occ) => (
-                    <MenuItem key={occ.id} value={occ.id}>
+                  {occasionsList.map((occ, i) => (
+                    <MenuItem key={i + occ.id} value={occ.id}>
                       <Typography variant='span'>
                         {occ.name}-{occ.year}
                       </Typography>
@@ -65,15 +65,15 @@ function Dashboard({ routes }) {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
-              <Button type='submit' fullWidth variant='contained' color='primary' onClick={getOccasionsDashboardSummary}>
+              <Button type='submit' component={Fab} fullWidth variant='contained' color='primary' onClick={getOccasionsDashboardSummary}>
                 Get Details
               </Button>
             </Grid>
             {/* <Box sx={{ flexGrow: 1, m: 2 }}> */}
             {/* <Grid container spacing={2}> */}
             {/* <Grid item spacing={{ xs: 2, md: 3 }} sm={12} md={6}> */}
-            {occasionSummary.map((occ) => (
-              <Grid item key={occ.title} xs={12} sm={12} md={6}>
+            {occasionSummary.map((occ, i) => (
+              <Grid item key={i + occ.title} xs={12} sm={12} md={6}>
                 <Paper elevation={6}>
                   <Card sx={{ p: 0.5 }}>
                     <Typography variant='h6' component='div' sx={{ textTransform: 'capitalize', px: 0.5 }}>
