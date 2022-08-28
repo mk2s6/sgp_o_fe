@@ -18,7 +18,7 @@ const useInput = (initialValue) => {
     setHelperText(e.message);
   };
 
-  return [value, { value, onChange, error, helperText }, setValidationErrors, reset];
+  return [value, { value, onChange, error, helperText, _setValue: setValue }, setValidationErrors, reset];
 };
 
 export default useInput;

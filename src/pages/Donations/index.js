@@ -32,6 +32,10 @@ function Donations({ routes }) {
   const [donations, setDonations] = useState([]);
   const [occasionsList, setOccasionsList] = useState([]);
   const [modal, setModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+
+  const [editRow, setEditRow] = useState(null);
+
   const { loginStatus } = useContext(UserContext);
 
   const [occasion, bindOccasion, occasionValidation] = useInput('');
@@ -96,6 +100,33 @@ function Donations({ routes }) {
     }
   };
 
+  const editDonation = async () => {
+    try {
+      if (type === 'Amount') resetSI();
+      else resetAmount();
+      await APIRequest('UPDATE_DONATION', {
+        name: bindName.value || editRow.name,
+        type: bindType.value || editRow.type,
+        amount: bindAmount.value || editRow.amount,
+        sponsored_item: bindSponsoredItem.value || editRow.sponsored_item || '',
+        occasion: bindOccasion.value,
+        donation: editRow.id,
+      });
+      resetName();
+      resetType();
+      resetSI();
+      resetAmount();
+      setEditModal(false);
+      setEditRow(null);
+      getDonations();
+    } catch (e) {
+      console.log(e);
+      if (e.type === 0 && e.errors.length) {
+        setValidations(validationFields, e.errors);
+      }
+    }
+  };
+
   const getDonations = async () => {
     try {
       const { data } = await APIRequest('GET_DONATIONS', { occasion: bindOccasion.value });
@@ -133,6 +164,17 @@ function Donations({ routes }) {
     }
   };
 
+  const updateToggle = async (status, row) => {
+    // alert('hi');
+    setEditModal(status);
+    setEditRow(row);
+
+    bindName._setValue(row.name);
+    bindType._setValue(row.type);
+    bindAmount._setValue(row.amount || 0);
+    bindSponsoredItem._setValue(row.sponsored_item || '');
+  };
+
   useEffect(() => {
     getOccasions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,26 +190,25 @@ function Donations({ routes }) {
           BackdropComponent={Backdrop}
           BackdropProps={{
             timeout: 500,
-          }}
-        >
+          }}>
           <Fade in={modal}>
-            <Box maxWidth='sm' sx={style}>
-              <Typography id='transition-modal-title' variant='h6' component='h2'>
+            <Box maxWidth="sm" sx={style}>
+              <Typography id="transition-modal-title" variant="h6" component="h2">
                 Add Donation
               </Typography>
-              <Grid container maxWidth='sm' spacing={2}>
+              <Grid container maxWidth="sm" spacing={2}>
                 <Grid item xs={12}>
-                  <TextField variant='outlined' required fullWidth {...bindName} id='name' label='Name' name='name' autoComplete='nope' />
+                  <TextField variant="outlined" required fullWidth {...bindName} id="name" label="Name" name="name" autoComplete="nope" />
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <FormControl fullWidth>
-                    <InputLabel id='type-simple-select-label'>Donation-Type</InputLabel>
-                    <Select labelId='type-simple-select-label' id='type-simple-select' label='Occasion' {...bindType}>
-                      <MenuItem value='Amount' selected>
-                        <Typography variant='span'>Amount</Typography>
+                    <InputLabel id="type-simple-select-label">Donation-Type</InputLabel>
+                    <Select labelId="type-simple-select-label" id="type-simple-select" label="Occasion" {...bindType}>
+                      <MenuItem value="Amount" selected>
+                        <Typography variant="span">Amount</Typography>
                       </MenuItem>
-                      <MenuItem value='Sponsor'>
-                        <Typography variant='span'>Sponsor</Typography>
+                      <MenuItem value="Sponsor">
+                        <Typography variant="span">Sponsor</Typography>
                       </MenuItem>
                     </Select>
                   </FormControl>
@@ -175,35 +216,25 @@ function Donations({ routes }) {
 
                 {type === 'Amount' ? (
                   <Grid item xs={12}>
-                    <TextField
-                      variant='outlined'
-                      required
-                      fullWidth
-                      {...bindAmount}
-                      name='Amount'
-                      label='Amount'
-                      type='Amount'
-                      id='Amount'
-                      autoComplete='nope'
-                    />
+                    <TextField variant="outlined" required fullWidth {...bindAmount} name="Amount" label="Amount" type="Amount" id="Amount" autoComplete="nope" />
                   </Grid>
                 ) : (
                   <Grid item xs={12}>
                     <TextField
-                      variant='outlined'
+                      variant="outlined"
                       required
                       fullWidth
                       {...bindSponsoredItem}
-                      name='Sponsored Item'
-                      label='Sponsored Item'
-                      type='Sponsored Item'
-                      id='Sponsored Item'
-                      autoComplete='nope'
+                      name="Sponsored Item"
+                      label="Sponsored Item"
+                      type="Sponsored Item"
+                      id="Sponsored Item"
+                      autoComplete="nope"
                     />
                   </Grid>
                 )}
                 <Grid item xs={12}>
-                  <Button component={Fab} type='submit' onClick={addDonation} fullWidth variant='contained' color='primary'>
+                  <Button component={Fab} type="submit" onClick={addDonation} fullWidth variant="contained" color="primary">
                     Donate
                   </Button>
                 </Grid>
@@ -212,23 +243,86 @@ function Donations({ routes }) {
           </Fade>
         </Modal>
       )}
-      <Container component='main' maxWidth='md' sx={{ mt: 1, p: 0.5, xs: { maxWidth: '100%', minWidth: '95%' } }}>
-        <Paper
-          component='div'
-          elevation={5}
-          sx={{ m: 1, p: 2, flexGrow: 1, mt: '10px', alignItems: 'center', display: 'flex', flexDirection: 'column' }}
-        >
-          <Typography variant='h6' sx={{ textTransform: 'uppercase' }}>
+
+      {loginStatus && (
+        <Modal
+          open={editModal}
+          onClose={() => setEditModal(false)}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}>
+          <Fade in={editModal}>
+            <Box maxWidth="sm" sx={style}>
+              <Grid container maxWidth="sm" spacing={2}>
+                <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
+                  <Typography id="transition-modal-title" variant="h6" component="h2">
+                    Update Donation - <i>{editModal && editRow && editRow.name}</i>
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container maxWidth="sm" spacing={2}>
+                <Grid item xs={12}>
+                  <TextField variant="outlined" required fullWidth {...bindName} id="name" label="Name" name="name" autoComplete="nope" />
+                </Grid>
+                <Grid item xs={12} md={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id="type-simple-select-label">Donation-Type</InputLabel>
+                    <Select labelId="type-simple-select-label" id="type-simple-select" label="Occasion" {...bindType}>
+                      <MenuItem value="Amount" selected>
+                        <Typography variant="span">Amount</Typography>
+                      </MenuItem>
+                      <MenuItem value="Sponsor">
+                        <Typography variant="span">Sponsor</Typography>
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {type === 'Amount' ? (
+                  <Grid item xs={12}>
+                    <TextField variant="outlined" required fullWidth {...bindAmount} name="Amount" label="Amount" type="Amount" id="Amount" autoComplete="nope" />
+                  </Grid>
+                ) : (
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      {...bindSponsoredItem}
+                      name="Sponsored Item"
+                      label="Sponsored Item"
+                      type="Sponsored Item"
+                      id="Sponsored Item"
+                      autoComplete="nope"
+                    />
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Button component={Fab} type="submit" onClick={editDonation} fullWidth variant="contained" color="primary">
+                    Update
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Fade>
+        </Modal>
+      )}
+
+      <Container component="main" maxWidth="md" sx={{ mt: 1, p: 0.5, xs: { maxWidth: '100%', minWidth: '95%' } }}>
+        <Paper component="div" elevation={5} sx={{ m: 1, p: 2, flexGrow: 1, mt: '10px', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+          <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>
             Donations
           </Typography>
           <Grid container spacing={2} sx={{ m: 1 }}>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-label'>Occasion</InputLabel>
-                <Select labelId='demo-simple-select-label' id='demo-simple-select' label='Occasion' {...bindOccasion}>
+                <InputLabel id="demo-simple-select-label">Occasion</InputLabel>
+                <Select labelId="demo-simple-select-label" id="demo-simple-select" label="Occasion" {...bindOccasion}>
                   {occasionsList.map((occ) => (
                     <MenuItem key={occ.id} value={occ.id}>
-                      <Typography variant='span'>
+                      <Typography variant="span">
                         {occ.name}-{occ.year}
                       </Typography>
                     </MenuItem>
@@ -237,7 +331,7 @@ function Donations({ routes }) {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
-              <Button component={Fab} type='submit' fullWidth variant='contained' color='primary' onClick={getDonations}>
+              <Button component={Fab} type="submit" fullWidth variant="contained" color="primary" onClick={getDonations}>
                 Get Details
               </Button>
             </Grid>
@@ -245,29 +339,36 @@ function Donations({ routes }) {
 
           {donations.length > 0 && (
             <TableContainer sx={{ mt: 2 }}>
-              <Table sx={{ minWidth: 300 }} size='small' aria-label='simple table'>
+              <Table sx={{ minWidth: 300 }} size="small" aria-label="simple table">
                 <TableHead>
                   <TableRow>{headCells.map((c) => (!c.needAuth || loginStatus) && <TableCell key={c.id}>{c.label}</TableCell>)}</TableRow>
                 </TableHead>
                 <TableBody>
                   {donations.map((row, i) => (
                     <TableRow key={i + row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell key={i + row.name + 'name'} component='th' scope='row'>
+                      <TableCell key={i + row.name + 'name'} component="th" scope="row">
                         {row.name}
                       </TableCell>
-                      <TableCell key={i + row.name + 'type'} align='left'>
+                      <TableCell key={i + row.name + 'type'} align="left">
                         {row.type}
                       </TableCell>
-                      <TableCell key={i + row.name + 'it'} align='left'>
+                      <TableCell key={i + row.name + 'it'} align="left">
                         {row.amount > 0 ? row.amount : row.sponsored_item}
                       </TableCell>
-                      <TableCell key={i + row.name + 'rec'} align='left'>
+                      <TableCell key={i + row.name + 'rec'} align="left">
                         {row.received ? 'Received' : 'Not Received'}
                       </TableCell>
                       {loginStatus && (
-                        <TableCell key={i + row.name + 're'} align='left'>
-                          <Button disabled={!!row.received} variant='contained' onClick={() => updateDonation(row)}>
+                        <TableCell key={i + row.name + 're'} align="left">
+                          <Button disabled={!!row.received} variant="contained" onClick={() => updateDonation(row)}>
                             Receive
+                          </Button>
+                        </TableCell>
+                      )}
+                      {loginStatus && (
+                        <TableCell key={i + row.name + 'edit'} align="left">
+                          <Button disabled={!loginStatus || !!row.received} variant="contained" onClick={() => updateToggle(true, row)}>
+                            Edit
                           </Button>
                         </TableCell>
                       )}
@@ -280,7 +381,7 @@ function Donations({ routes }) {
         </Paper>
       </Container>
       {loginStatus && occasion && (
-        <Fab sx={fabStyle} variant='extended' onClick={() => setModal(true)} color='primary' aria-label='add'>
+        <Fab sx={fabStyle} variant="extended" onClick={() => setModal(true)} color="primary" aria-label="add">
           <AddIcon />
           Add Donation
         </Fab>
