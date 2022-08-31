@@ -19,7 +19,7 @@ export const PAY_FULL_EXPENSE = async ({ occasion = 0, expense = 0 }) => await a
 export const ADD_EXPENSE = async ({ expenseFor, description, paid, amount, occasion = 0 }, { token }) =>
   await axios.post(`${BASE_URL}/expenses/add/${occasion}`, { expenseFor, description, paid, amount }, { headers: { 'x-id-token': token } });
 
-export const UPDATE_EXPENSE = async ({ paid, amount, occasion = 0, expense }, { token }) =>
-  await axios.post(`${BASE_URL}/expenses/update/${occasion}/${expense}`, { paid, amount }, { headers: { 'x-id-token': token } });
+export const UPDATE_EXPENSE = async ({ expenseFor, description, paid, amount, occasion = 0, expense }, { token }) =>
+  await axios.put(`${BASE_URL}/expenses/update/${occasion}/${expense}`, { expenseFor, description, paid, amount }, { headers: { 'x-id-token': token } });
 
 export const GET_OCCASIONS_DASHBOARD_SUMMARY = async ({ occasion }) => await axios.get(`${BASE_URL}/occasions/dashboard/summary/${occasion}`);

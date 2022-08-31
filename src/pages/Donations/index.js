@@ -88,6 +88,7 @@ function Donations({ routes }) {
     { id: 'donation', numeric: false, label: 'Donation', needAuth: false },
     { id: 'status', numeric: false, label: 'Status', needAuth: false },
     { id: 'received', numeric: false, label: 'Receive', needAuth: true },
+    { id: 'edit', numeric: false, label: 'Edit', needAuth: true },
   ];
 
   const updateDonation = async (donation) => {

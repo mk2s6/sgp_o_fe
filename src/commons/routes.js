@@ -11,9 +11,9 @@ export const routes = {
     noAuth: [{ id: 'noAuth-1', label: 'Sign In', route: '/login', component: Login }],
   },
   nav: [
-    { id: 0, label: 'DashBoard', route: '/dashboard', component: Dashboard, inTab: true, requireAuth: false },
-    { id: 1, label: 'Donations', route: '/donations', component: Donations, inTab: true, requireAuth: false },
-    { id: 2, label: 'Expenses', route: '/expenses', component: Expenses, inTab: true, requireAuth: false },
+    { id: 0, label: 'DashBoard', route: '/dashboard', component: Dashboard, inTab: true, requireAuth: true },
+    { id: 1, label: 'Donations', route: '/donations', component: Donations, inTab: true, requireAuth: true },
+    { id: 2, label: 'Expenses', route: '/expenses', component: Expenses, inTab: true, requireAuth: true },
     {
       id: 3,
       label: 'Occasions',

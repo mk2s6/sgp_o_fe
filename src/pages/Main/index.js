@@ -9,7 +9,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <Container role='tabpanel' hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+    <Container role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </Container>
   );
@@ -22,10 +22,10 @@ function Main({ routes }) {
   const { loginStatus, unRegisterUser } = useContext(UserContext);
 
   useEffect(() => {
-    if (loginStatus && location.pathname === '/login') history.replace('/');
+    if (loginStatus && location.pathname === '/login') history.replace('/dashboard');
     if (loginStatus && location.pathname === '/signout') {
       unRegisterUser();
-      history.replace('/');
+      history.replace('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginStatus, unRegisterUser]);

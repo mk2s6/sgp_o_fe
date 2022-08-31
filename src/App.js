@@ -21,7 +21,7 @@ function App() {
       <UserContextProvider>
         <SnackbarProvider
           ref={notistackRef}
-          autoHideDuration={3000}
+          autoHideDuration={1500}
           maxSnack={3}
           TransitionComponent={Slide}
           anchorOrigin={{
@@ -30,8 +30,7 @@ function App() {
           }}
           preventDuplicate
           action={(key) => <Button onClick={onClickDismiss(key)}>Close</Button>}
-          sx={{ zIndex: 100000 }}
-        >
+          sx={{ zIndex: 100000 }}>
           <LoaderContextProvider>
             <Loader />
             <Router>
